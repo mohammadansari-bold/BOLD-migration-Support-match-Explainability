@@ -7,7 +7,7 @@ A FastAPI service that generates support match explainability using OpenAI. It e
 - FastAPI application with a mounted explainability endpoint
 - OpenAI chat-based text generation using a structured prompt
 - `MatchExplainabilityResponse` output with explainability, skill alignment, work history relevance, gaps, and rectifier guidance
-- Simple logging and environment-based OpenAI API configuration
+- Logging and environment-based OpenAI API configuration
 
 ---
 
