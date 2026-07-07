@@ -9,70 +9,172 @@ A FastAPI service that generates support match explainability using OpenAI. It e
 - `MatchExplainabilityResponse` output with explainability, skill alignment, work history relevance, gaps, and rectifier guidance
 - Simple logging and environment-based OpenAI API configuration
 
-## Requirements
+---
 
-- Python 3.12+
-- OpenAI API key
-- Dependencies from `pyproject.toml`
+## Tech Stack
 
-## Setup
+| Technology | Purpose |
+|------------|---------|
+| Python 3.12+ | Programming Language |
+| FastAPI | REST API Framework |
+| OpenAI API | Explainability Generation |
+| Pydantic | Request & Response Validation |
+| uv | Dependency Management |
 
-1. Create a virtual environment and install dependencies:
+---
 
-```bash
-python -m venv .venv
-.\.venv\Scripts\activate
-python -m pip install -U pip
-python -m pip install -r requirements.txt
+## Project Structure
+
+```
+.
+├── app.py
+├── config.py
+├── constants.py
+├── logger.py
+├── match_explainability
+│   ├── explainability.py
+│   ├── main.py
+│   ├── prompts.py
+│   └── request_response_format.py
+└── utilities
+    └── ai_generator.py
 ```
 
-> If `requirements.txt` is not available, install from `pyproject.toml`:
->
-> ```bash
-> python -m pip install -e .
-> ```
+### Description
 
-2. Create a `.env` file in the project root:
+| File | Purpose |
+|------|---------|
+| `app.py` | FastAPI application and route registration |
+| `config.py` | Environment configuration |
+| `constants.py` | Default model configuration |
+| `logger.py` | Logging configuration |
+| `match_explainability/main.py` | API endpoint implementation |
+| `match_explainability/explainability.py` | Explainability generation logic |
+| `match_explainability/prompts.py` | Prompt templates |
+| `match_explainability/request_response_format.py` | Request and response models |
+| `utilities/ai_generator.py` | OpenAI helper utilities |
+
+---
+
+# Prerequisites
+
+- Python 3.12+
+- OpenAI API Key
+- uv package manager
+
+Install uv if required:
+
+```bash
+pip install uv
+```
+
+---
+
+# Installation
+
+Clone the repository:
+
+```bash
+
+git clone https://github.com/mohammadansari-bold/BOLD-migration-Support-match-Explainability.git
+cd BOLD-migration-Support-match-Explainability
+
+```
+
+Create a virtual environment:
+
+### Windows
+
+```bash
+uv venv
+.\.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+uv sync
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the project root.
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-## Run the application
+| Variable | Required | Description |
+|----------|----------|-------------|
+| OPENAI_API_KEY | Yes | OpenAI API Key used for generating explainability |
 
-Start the API server with:
+---
+
+# Running the Application
+
+Run the application:
 
 ```bash
-python app.py
+uv run app.py
 ```
 
-Or using Uvicorn directly:
+or
 
 ```bash
-uvicorn app:app --reload --host 127.0.0.1 --port 8000
+uv run uvicorn app:app --reload --host 127.0.0.1 --port 8000
 ```
 
-The main API will be available at:
+The API will be available at:
 
-- `GET /app` — health check
-- `POST /api/v1/jobs/match-explainability` — generate explainability
+```
+http://127.0.0.1:8000
+```
 
-Swagger UI is available at `http://127.0.0.1:8000/docs`.
+Swagger Documentation:
 
-## API Usage
+```
+http://127.0.0.1:8000/docs
+```
 
-### POST /api/v1/jobs/match-explainability
+ReDoc Documentation:
 
-Send a JSON payload with `Job_ID` and `Profile_attributes`.
+```
+http://127.0.0.1:8000/redoc
+```
 
-Example request body:
+---
+
+# API Endpoint
+
+## Generate Match Explainability
+
+**POST**
+
+```
+/api/v1/jobs/match-explainability
+```
+
+### Request Body
 
 ```json
 {
   "Job_ID": "job-123",
   "Profile_attributes": {
     "job_title": "Software Engineer",
-    "skills": ["Python", "FastAPI", "REST APIs"],
+    "skills": [
+      "Python",
+      "FastAPI",
+      "REST APIs"
+    ],
     "work_history": [
       {
         "company": "Example Corp",
@@ -86,27 +188,42 @@ Example request body:
 }
 ```
 
-### Response schema
+## Sample Response
 
-The endpoint returns a JSON object matching `MatchExplainabilityResponse`:
+```json
+{
+  "explainability": "The job description is very brief, mentioning backend/API work and data retrieval. Your background in RESTful API development aligns well with implementing server-side logic to fetch and serve job description data.",
+  "skills": "This job aligns with your profile because you possess the following skills that are mentioned in the job description: REST APIs, Python.",
+  "wh_relevance": "Your work as a Backend Developer focused on building RESTful APIs and maintaining microservices, which is transferable to implementing backend logic.",
+  "gaps": "The job description doesn't mention specific requirements, but potential gaps include database/query skills, integration with external APIs, caching, and API specifications.",
+  "rectifier": "You could improve your profile by highlighting backend fetching and integration work, API documentation, and database experience."
+}
+```
 
-- `explainability`: explanation of how the profile fits the job
-- `skills`: matched skills between profile and job description
-- `wh_relevance`: relevance of work history to the job
-- `gaps`: missing skills or experience gaps
-- `rectifier`: suggested next step or missing details to add
+---
 
-## Project structure
+# Response Fields
 
-- `app.py` — root FastAPI app and endpoint mounting
-- `match_explainability/main.py` — explainability endpoint implementation
-- `match_explainability/explainability.py` — OpenAI prompt and explainability generation logic
-- `match_explainability/prompts.py` — system prompt template for match explainability
-- `match_explainability/request_response_format.py` — Pydantic request/response models
-- `utilities/ai_generator.py` — OpenAI integration helpers and generator classes
-- `config.py` — environment loading for `OPENAI_API_KEY`
-- `constants.py` — OpenAI model and default settings
-- `logger.py` — logging configuration
+| Field | Description |
+|-------|-------------|
+| explainability | Overall reasoning behind the candidate-job match |
+| skills | Skills aligned with the job description |
+| wh_relevance | Relevance of previous work history |
+| gaps | Missing skills or experience |
+| rectifier | Suggested improvements for the profile |
+
+---
+
+# HTTP Status Codes
+
+| Status Code | Description |
+|------------|-------------|
+| 200 | Explainability generated successfully |
+| 400 | Invalid request payload |
+| 422 | Validation error |
+| 500 | Internal server error |
+
+---
 
 ## Notes
 
