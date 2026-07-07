@@ -1,4 +1,4 @@
-# Bold Migration Support Match Explainability
+# BOLD Migration Support Match Explainability
 
 A FastAPI service that generates support match explainability using OpenAI. It evaluates how a user profile aligns with a job description and returns structured explainability details.
 
