@@ -1,0 +1,12 @@
+[project]
+name = "bold-migration-support-match-explainability"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastapi>=0.139.0",
+    "openai>=2.44.0",
+    "uvicorn>=0.50.2",
+]
