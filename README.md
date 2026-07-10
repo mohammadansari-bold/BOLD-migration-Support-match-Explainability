@@ -162,29 +162,26 @@ http://127.0.0.1:8000/redoc
 ```
 /api/v1/jobs/match-explainability
 ```
+*(Note: `Job_ID` is passed a query parameter)*
 
 ### Request Body
 
 ```json
 {
-  "Job_ID": "job-123",
-  "Profile_attributes": {
-    "job_title": "Software Engineer",
-    "skills": [
-      "Python",
-      "FastAPI",
-      "REST APIs"
-    ],
-    "work_history": [
-      {
-        "company": "Example Corp",
-        "role": "Backend Developer",
-        "duration": "2 years",
-        "highlights": "Built RESTful APIs and automated deployments"
-      }
-    ],
-    "job_id": "job-123"
-  }
+  "job_title": "Software Engineer",
+  "skills": [
+    "Python",
+    "FastAPI",
+    "REST APIs"
+  ],
+  "work_history": [
+    {
+      "company": "Example Corp",
+      "role": "Backend Developer",
+      "duration": "2 years",
+      "highlights": "Built RESTful APIs and automated deployments"
+    }
+  ]
 }
 ```
 
@@ -227,8 +224,9 @@ http://127.0.0.1:8000/redoc
 
 ## Notes
 
-- The current implementation uses a placeholder job description: `Implement job description fetching logic`.
-- To make the service production-ready, add real job description retrieval based on `Job_ID`.
+- ~~The current implementation uses a placeholder job description: `Implement job description fetching logic`.~~
+- ~~To make the service production-ready, add real job description retrieval based on `Job_ID`.~~
+- Fetching Job description function has successfully been implemented, validated the response with real `Job_ID`. [10/07/2026]
 - Ensure your OpenAI key is valid and has access to the configured model.
 
 ## Development
