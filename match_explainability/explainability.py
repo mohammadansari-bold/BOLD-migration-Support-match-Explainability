@@ -1,4 +1,5 @@
 import json
+import httpx
 
 from match_explainability.prompts import (
     MATCH_EXPLAINABILTY_SYSTEM_PROMPT,
@@ -24,6 +25,29 @@ class MatchExplainability:
                 presence_penalty=0,
             )
         )
+    
+    async def _fetch_job_description(self, job_id: str) -> str:
+        """Fetches the job description for the given job_id."""
+        try:
+            url = f"https://jobs-job-api.mwwnextappprod-us.monster-next.com/jobs-job-api/v1/jobs/{job_id}"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
+                response.raise_for_status()  
+                job_data = response.json()
+
+            # Extract the nested jobPosting object first, defaulting to an empty dict if not present
+            job_posting = job_data.get("jobPosting", {})
+
+            # Now extract the description from the jobPosting, defaulting to a message if not present
+            job_description = job_posting.get("description", "No job description available.")
+
+            logger.info(f"Fetched job description for Job ID {job_id}: {job_description[:100]}...") 
+
+            return job_description
+        
+        except Exception as e:
+            logger.error(f"Error fetching job description for Job ID {job_id}: {str(e)}")
+            raise
 
     async def generate_explainability(self, job_id: str, profile_attributes: dict) -> MatchExplainabilityResponse:
         """Generates explainability for the given job_id and profile_attributes."""
@@ -33,8 +57,7 @@ class MatchExplainability:
             user_skills = profile_attributes.get("skills", [])
             user_wh = profile_attributes.get("work_history", [])
 
-            # TODO: Fetch the actual Job Description using the job_id.
-            job_description = "Implement job description fetching logic"
+            job_description = await self._fetch_job_description(job_id)
 
             logger.info(f"Generating explainability for Job ID: {job_id}")
 
