@@ -23,6 +23,7 @@ class MatchExplainability:
                 top_p=0.5,
                 frequency_penalty=0,
                 presence_penalty=0,
+                max_tokens=1000
             )
         )
     
@@ -36,10 +37,10 @@ class MatchExplainability:
                 job_data = response.json()
 
             # Extract the nested jobPosting object first, defaulting to an empty dict if not present
-            job_posting = job_data.get("jobPosting", {})
+            job_posting = job_data.get("jobPosting") or {}
 
             # Now extract the description from the jobPosting, defaulting to a message if not present
-            job_description = job_posting.get("description", "No job description available.")
+            job_description = job_posting.get("description") or "No job description available."
 
             logger.info(f"Fetched job description for Job ID {job_id}: {job_description[:100]}...") 
 

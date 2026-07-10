@@ -585,7 +585,7 @@ class OpenAITextGenerator(BaseGenerator):
             payload["response_format"] = self.response_format
 
         if self.config.max_tokens:
-            payload["max_tokens"] = self.config.max_tokens
+            payload["max_completion_tokens"] = self.config.max_tokens
 
         if self.system_prompt:
             payload["messages"].append(
